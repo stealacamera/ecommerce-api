@@ -35,7 +35,8 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
-        extra_kwargs = {'rating': {'required': True}}
+        extra_kwargs = {'text': {'required': False},
+                        'rating': {'required': True}}
     
     def save(self, **kwargs):
         if self.context['request'].method == 'POST':

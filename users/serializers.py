@@ -59,11 +59,11 @@ class ChangeUsernameSerializer(serializers.Serializer):
     new_username = serializers.CharField()
     
     def validate_new_username(self, value):
-        if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError('This username is taken')
-        
         if self.context['request'].user.username == value:
             raise serializers.ValidationError('New username should be different from current one')
+        
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError('This username is taken')
         
         return value
     

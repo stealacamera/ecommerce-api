@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.core.validators import MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Category(models.Model):
@@ -39,7 +39,7 @@ class Review(models.Model):
     date = models.DateField(auto_now_add=True)
     title = models.CharField(max_length=70)
     text = models.TextField()
-    rating = models.PositiveIntegerField(validators=(MaxValueValidator(5),))
+    rating = models.PositiveIntegerField(validators=(MinValueValidator(1), MaxValueValidator(5),))
 
     def __str__(self):
         return self.user.username + ': ' + self.title

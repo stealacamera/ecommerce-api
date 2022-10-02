@@ -30,7 +30,7 @@ class RegisterView(APIView):
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
     
-    def post(self, request):
+    def put(self, request):
         serialized = serializers.ChangePasswordSerializer(data=request.data,
                                                           context = {'request': request})
         serialized.is_valid(raise_exception=True)
@@ -54,7 +54,7 @@ class CurrentProfileView(APIView):
                                                           context = {'request': request})
         return Response(serialized.data, status=status.HTTP_200_OK)
     
-    def post(self, request):
+    def put(self, request):
         serialized = serializers.ChangeUsernameSerializer(data=request.data,
                                                           context = {'request': request})
         serialized.is_valid(raise_exception=True)

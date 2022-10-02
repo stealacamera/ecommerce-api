@@ -31,6 +31,16 @@ class CheckoutSerializer(serializers.Serializer):
         user_cart.delete()
 
 
+class OrderSerializer(serializers.ModelSerializer):
+    seller = serializers.CharField(source='seller.username', read_only=True)
+    product = serializers.CharField(source='product.name', read_only=True)
+    
+    class Meta:
+        model = Order
+        fields = '__all__'
+        read_only_fields = ['quantity']
+
+
 class CustomerSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
     
@@ -38,12 +48,5 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'address']
  
-class OrderSerializer(serializers.ModelSerializer):
-    seller = serializers.CharField(source='seller.username', read_only=True)
+class SalesSerializer(OrderSerializer):
     customer = CustomerSerializer(read_only=True)
-    product = serializers.CharField(source='product.name', read_only=True)
-    
-    class Meta:
-        model = Order
-        fields = '__all__'
-        read_only_fields = ['quantity']

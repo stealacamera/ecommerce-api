@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_201_CREATED
 
 from .models import Order
-from .serializers import CheckoutSerializer, OrderSerializer
+from .serializers import CheckoutSerializer, OrderSerializer, SalesSerializer
 from .paginations import OrderPagination
 
 
@@ -28,7 +28,7 @@ class SalesDisplay(mixins.ListModelMixin,
                    mixins.UpdateModelMixin,
                    mixins.DestroyModelMixin,
                    GenericViewSet):
-    serializer_class = OrderSerializer
+    serializer_class = SalesSerializer
     
     permission_classes = [IsAuthenticated]
     pagination_class = OrderPagination
