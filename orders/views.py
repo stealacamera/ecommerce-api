@@ -10,6 +10,7 @@ from rest_framework.status import HTTP_201_CREATED
 
 from .models import Order
 from .serializers import CheckoutSerializer, OrderSerializer
+from .paginations import OrderPagination
 
 
 class CheckoutView(APIView):
@@ -28,7 +29,9 @@ class SalesDisplay(mixins.ListModelMixin,
                    mixins.DestroyModelMixin,
                    GenericViewSet):
     serializer_class = OrderSerializer
+    
     permission_classes = [IsAuthenticated]
+    pagination_class = OrderPagination
     
     def get_queryset(self):
         return Order.objects.filter(seller=self.request.user)
@@ -42,7 +45,9 @@ class SalesDisplay(mixins.ListModelMixin,
 
 class OrderHistoryDisplay(ListAPIView):
     serializer_class = OrderSerializer
+    
     permission_classes = [IsAuthenticated]
+    pagination_class = OrderPagination
     
     def get_queryset(self):
         return Order.objects.filter(customer=self.request.user)

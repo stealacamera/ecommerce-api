@@ -5,7 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 from . import models, serializers, permissions
-from .paginations import ProductPagination
+from .paginations import CustomPagination
 from orders.models import Order
 
 
@@ -14,12 +14,14 @@ class CategoryDisplay(ModelViewSet):
     serializer_class = serializers.CategorySerializer
     
     permission_classes = [permissions.IsAdminOrReadOnly]
+    pagination_class = CustomPagination
 
 
 class ProductDisplay(ModelViewSet):
     queryset = models.Product.objects.all()
+    
     permission_classes = [permissions.IsSellerOrReadOnly]
-    pagination_class = ProductPagination
+    pagination_class = CustomPagination
     
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_fields = ['categories', 'rating']
@@ -44,7 +46,9 @@ class ProductDisplay(ModelViewSet):
 
 class ReviewDisplay(ModelViewSet):
     serializer_class = serializers.ReviewSerializer
+    
     permission_classes = [permissions.IsNotSellerOrReadOnly]
+    pagination_class = CustomPagination
     
     def get_queryset(self):
         pk = self.kwargs['product_pk']

@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenBlacklistView
 
 from . import views
@@ -6,7 +7,7 @@ from . import views
 urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='register'),
     path('change-password/', views.ChangePasswordView.as_view(), name='change-password'),
-    path('change-contact/', views.ChangeAddress.as_view(), name='change-contact'),
+    path('change-address/', views.ChangeAddress.as_view(), name='change-address'),
     path('token-refresh/', TokenRefreshView.as_view(), name='token-refresh'),
     
     path('login/', TokenObtainPairView.as_view(), name='login'),

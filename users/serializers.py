@@ -10,6 +10,7 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         exclude = ['id', 'user']
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField()
     address = AddressSerializer()
@@ -53,6 +54,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         
         return account
 
+
 class ChangeUsernameSerializer(serializers.Serializer):
     new_username = serializers.CharField()
     
@@ -69,6 +71,7 @@ class ChangeUsernameSerializer(serializers.Serializer):
         account = self.context['request'].user
         account.username = self.validated_data['new_username']
         account.save()
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField()
@@ -99,6 +102,7 @@ class ChangePasswordSerializer(serializers.Serializer):
         except TokenError:
             raise serializers.ValidationError('Token is invalid or expired')
 
+
 class CurrentProfileSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
     products = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='product-detail')
@@ -106,6 +110,7 @@ class CurrentProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'address', 'products']
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     products = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='product-detail')
