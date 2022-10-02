@@ -3,6 +3,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework import mixins
 
+from rest_framework.filters import OrderingFilter
 from rest_framework.serializers import ValidationError
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -33,6 +34,9 @@ class SalesDisplay(mixins.ListModelMixin,
     permission_classes = [IsAuthenticated]
     pagination_class = OrderPagination
     
+    filter_backends = [OrderingFilter]
+    ordering_fields = ['date_ordered']
+    
     def get_queryset(self):
         return Order.objects.filter(seller=self.request.user)
     
@@ -48,6 +52,9 @@ class OrderHistoryDisplay(ListAPIView):
     
     permission_classes = [IsAuthenticated]
     pagination_class = OrderPagination
+    
+    filter_backends = [OrderingFilter]
+    ordering_fields = ['date_ordered']
     
     def get_queryset(self):
         return Order.objects.filter(customer=self.request.user)

@@ -50,6 +50,9 @@ class ReviewDisplay(ModelViewSet):
     permission_classes = [permissions.IsNotSellerOrReadOnly]
     pagination_class = CustomPagination
     
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['rating']
+    
     def get_queryset(self):
         pk = self.kwargs['product_pk']
         return models.Review.objects.filter(product__id=pk)

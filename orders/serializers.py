@@ -37,7 +37,7 @@ class OrderSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Order
-        fields = '__all__'
+        exclude = ['customer']
         read_only_fields = ['quantity']
 
 
@@ -50,3 +50,8 @@ class CustomerSerializer(serializers.ModelSerializer):
  
 class SalesSerializer(OrderSerializer):
     customer = CustomerSerializer(read_only=True)
+    
+    class Meta:
+        model = Order
+        fields = '__all__'
+        read_only_fields = ['quantity']
