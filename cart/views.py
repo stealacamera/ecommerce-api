@@ -16,7 +16,7 @@ class CreateCartView(CreateAPIView):
     
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update({"product_pk": self.kwargs['product_pk']})
+        context.update({'product_pk': self.kwargs['product_pk']})
         return context
     
     def perform_create(self, serializer):

@@ -11,6 +11,7 @@ class RegisterTestCase(APITestCase):
                 'password': 'password',
                 'password2': 'password',
                 'address': {
+                    'country': 'country',
                     'city': 'city',
                     'street_address': 'user address 123',
                     'zip_code': '1000'}}
@@ -27,6 +28,7 @@ class ChangeInfo(APITestCase):
                 'password': 'password',
                 'password2': 'password',
                 'address': {
+                    'country': 'country',
                     'city': 'city',
                     'street_address': 'user address 123',
                     'zip_code': '1000'}}
@@ -38,7 +40,7 @@ class ChangeInfo(APITestCase):
     def test_updateusername(self):
         data = {'new_username': 'changed'}
         
-        response = self.client.post(reverse('personal-profile'), data)
+        response = self.client.put(reverse('personal-profile'), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_updatepassword(self):
@@ -49,7 +51,7 @@ class ChangeInfo(APITestCase):
                 'new_password': 'password',
                 'refresh': self.refresh_token}
         
-        response = self.client.post(reverse('change-password'), data)
+        response = self.client.put(reverse('change-password'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
         # testing for changed password
@@ -58,15 +60,16 @@ class ChangeInfo(APITestCase):
                 'new_password': 'changed',
                 'refresh': self.refresh_token}
         
-        response = self.client.post(reverse('change-password'), data)
+        response = self.client.put(reverse('change-password'), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_updatecontact(self):
-        data = {'city': 'new city',
+        data = {'country': 'country',
+                'city': 'new city',
                 'street_address': 'new address 345',
                 'zip_code': '1234'}
         
-        response = self.client.put(reverse('change-contact'), data)
+        response = self.client.put(reverse('change-address'), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 class ProfileTestCase(APITestCase):
@@ -78,6 +81,7 @@ class ProfileTestCase(APITestCase):
                 'password': 'password',
                 'password2': 'password',
                 'address': {
+                    'country': 'country',
                     'city': 'city',
                     'street_address': 'user address 123',
                     'zip_code': '1000'}}

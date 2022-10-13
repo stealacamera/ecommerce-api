@@ -3,8 +3,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework import mixins
 
-from rest_framework.filters import OrderingFilter
-from rest_framework.serializers import ValidationError
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_201_CREATED
@@ -27,24 +26,17 @@ class CheckoutView(APIView):
 class SalesDisplay(mixins.ListModelMixin,
                    mixins.RetrieveModelMixin,
                    mixins.UpdateModelMixin,
-                   mixins.DestroyModelMixin,
                    GenericViewSet):
     serializer_class = SalesSerializer
     
     permission_classes = [IsAuthenticated]
     pagination_class = OrderPagination
     
-    filter_backends = [OrderingFilter]
-    ordering_fields = ['date_ordered']
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status']
     
     def get_queryset(self):
-        return Order.objects.filter(seller=self.request.user)
-    
-    def perform_destroy(self, instance):
-        if instance.status == 'Ordered':
-            raise ValidationError('You cannot delete an order if it isn\'t shipped or refunded')
-        
-        return super().perform_destroy(instance)
+        return Order.objects.filter(product__seller=self.request.user).order_by('-date_ordered')
 
 
 class OrderHistoryDisplay(ListAPIView):
@@ -53,8 +45,8 @@ class OrderHistoryDisplay(ListAPIView):
     permission_classes = [IsAuthenticated]
     pagination_class = OrderPagination
     
-    filter_backends = [OrderingFilter]
-    ordering_fields = ['date_ordered']
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status']
     
     def get_queryset(self):
-        return Order.objects.filter(customer=self.request.user)
+        return Order.objects.filter(customer=self.request.user).order_by('-date_ordered')

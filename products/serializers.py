@@ -1,3 +1,4 @@
+from django.db.models import Avg, IntegerField
 from rest_framework import serializers
 
 from .models import Category, Product, Review
@@ -18,14 +19,23 @@ class ProductSerializer(serializers.ModelSerializer):
     seller = serializers.CharField(source='seller.username', read_only=True)
     categories = serializers.SlugRelatedField(queryset=Category.objects.all(),
                                               many=True, slug_field='name')
+    rating = serializers.SerializerMethodField()
     
     class Meta:
         model = Product
         fields = '__all__'
         extra_kwargs = {'categories': {'required': True},
                         'price': {'required': True},
-                        'stock': {'required': True},
-                        'rating': {'read_only': True}}
+                        'stock': {'required': True}}
+    
+    def get_rating(self, obj):
+        return obj.reviews.aggregate(Avg('rating', 
+                                         output_field=IntegerField()))['rating__avg'] or 0
+
+class MiniProductSerializer(ProductSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'price', 'image']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -37,22 +47,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'text': {'required': False},
                         'rating': {'required': True}}
-    
-    def save(self, **kwargs):
-        if self.context['request'].method == 'POST':
-            product = Product.objects.get(id=self.context['product_pk'])
-            review_rating = self.validated_data['rating']
-            
-            if Review.objects.filter(user=self.context['request'].user, product=product).exists():
-                raise serializers.ValidationError('You have already reviewed this product')
-            
-            if product.rating == 0:
-                product.rating = review_rating
-            else:
-                product.rating = (product.rating + review_rating) / 2
-            
-            product.save()
-        return super().save(**kwargs)
 
 
 class ReviewRelationSerializer(ReviewSerializer):

@@ -47,9 +47,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         account.save()
         
         address = Address.objects.create(user=account,
-                                                  city=address_data['city'],
-                                                  street_address=address_data['street_address'],
-                                                  zip_code=address_data['zip_code'])
+                                         country=address_data['country'],
+                                         city=address_data['city'],
+                                         street_address=address_data['street_address'],
+                                         zip_code=address_data['zip_code'])
         address.save()
         
         return account

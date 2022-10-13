@@ -17,7 +17,6 @@ class Order(models.Model):
         (REFUNDED, 'Refunded')
     ]
     
-    seller = models.ForeignKey(User, on_delete=models.SET(get_deleted_user), related_name='orders')
     customer = models.ForeignKey(User, on_delete=models.SET(get_deleted_user), related_name='placed_orders')
     
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders')

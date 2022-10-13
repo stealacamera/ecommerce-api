@@ -12,7 +12,7 @@ class CartPagination(LimitOffsetPagination):
         subtotal = 0
         
         for obj in data:
-            subtotal += obj['price']
+            subtotal += obj['total']
         
         return Response(OrderedDict([
             ('subtotal', subtotal),

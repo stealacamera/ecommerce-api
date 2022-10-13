@@ -4,28 +4,28 @@ from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
-from . import models, serializers, permissions
-from .paginations import CustomPagination
+from .models import Category, Product, Review
+from . import serializers, permissions
+from .paginations import CustomPagination, ReviewPagination
 from orders.models import Order
 
 
 class CategoryDisplay(ModelViewSet): 
-    queryset = models.Category.objects.all()
+    queryset = Category.objects.all()
     serializer_class = serializers.CategorySerializer
     
     permission_classes = [permissions.IsAdminOrReadOnly]
-    pagination_class = CustomPagination
 
 
 class ProductDisplay(ModelViewSet):
-    queryset = models.Product.objects.all()
+    queryset = Product.objects.all()
     
     permission_classes = [permissions.IsSellerOrReadOnly]
     pagination_class = CustomPagination
     
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
-    filterset_fields = ['categories', 'rating']
-    ordering_fields = ['price', 'rating']
+    filterset_fields = ['categories']
+    ordering_fields = ['price']
     search_fields = ['name', 'description']
 
     def get_serializer_class(self):
@@ -48,14 +48,14 @@ class ReviewDisplay(ModelViewSet):
     serializer_class = serializers.ReviewSerializer
     
     permission_classes = [permissions.IsNotSellerOrReadOnly]
-    pagination_class = CustomPagination
+    pagination_class = ReviewPagination
     
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['rating']
     
     def get_queryset(self):
         pk = self.kwargs['product_pk']
-        return models.Review.objects.filter(product__id=pk)
+        return Review.objects.filter(product__id=pk)
     
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -63,5 +63,5 @@ class ReviewDisplay(ModelViewSet):
         return context
     
     def perform_create(self, serializer):
-        product = models.Product.objects.get(id=self.kwargs['product_pk'])
+        product = Product.objects.get(id=self.kwargs['product_pk'])
         serializer.save(user=self.request.user, product=product)

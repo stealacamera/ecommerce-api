@@ -17,7 +17,6 @@ class Product(models.Model):
     name = models.CharField(max_length=80, unique=True)
     description = models.TextField()
     image = models.ImageField(upload_to='product_images', null=True, blank=True)
-    rating = models.PositiveIntegerField(default=0)
     
     price = models.DecimalField(default=0, max_digits=7, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)

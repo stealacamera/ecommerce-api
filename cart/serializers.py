@@ -2,20 +2,20 @@ from rest_framework import serializers
 
 from .models import CartItem
 from products.models import Product
+from products.serializers import MiniProductSerializer
 
 
 class CartItemSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    product = serializers.CharField(source='product.name', read_only=True)
-    product_id = serializers.IntegerField(source='product.id', read_only=True)
-    price = serializers.SerializerMethodField()
+    product = MiniProductSerializer(read_only=True)
+    total = serializers.SerializerMethodField()
     
     class Meta:
         model = CartItem
-        fields = ['id', 'user', 'product', 'product_id', 'quantity', 'price']
+        fields = ['id', 'user', 'product', 'quantity', 'total']
         extra_kwargs = {'quantity': {'required': True}}
     
-    def get_price(self, obj):
+    def get_total(self, obj):
         return obj.quantity * obj.product.price
     
     def validate(self, attrs):      

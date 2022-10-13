@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from .models import Order
+from products.serializers import MiniProductSerializer
 from cart.models import CartItem
 from users.serializers import AddressSerializer
 
@@ -13,7 +14,6 @@ class CheckoutSerializer(serializers.Serializer):
 
         for item in user_cart:
             product = item.product
-            seller = product.seller
             
             if product.stock == 0:
                 raise serializers.ValidationError(f'{product.name} is out of stock')
@@ -23,8 +23,7 @@ class CheckoutSerializer(serializers.Serializer):
                 product.stock = product.stock - item.quantity
                 product.save()
             
-            Order.objects.create(seller=seller,
-                                 customer=customer,
+            Order.objects.create(customer=customer,
                                  product=product,
                                  quantity=item.quantity)
 
@@ -32,8 +31,8 @@ class CheckoutSerializer(serializers.Serializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    seller = serializers.CharField(source='seller.username', read_only=True)
-    product = serializers.CharField(source='product.name', read_only=True)
+    seller = serializers.CharField(source='product.seller', read_only=True)
+    product = MiniProductSerializer(read_only=True)
     
     class Meta:
         model = Order
@@ -46,7 +45,7 @@ class CustomerSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'address']
+        fields = ['first_name', 'last_name', 'email', 'address']
  
 class SalesSerializer(OrderSerializer):
     customer = CustomerSerializer(read_only=True)
