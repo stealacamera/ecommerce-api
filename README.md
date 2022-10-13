@@ -1,6 +1,7 @@
 # Ecommerce API
-> REST API to store and keep track of categories, products, user carts, orders/sales.
-
+> REST API to store and keep track of categories, products, user carts, orders/sales.  
+  
+API frontend: https://github.com/stealacamera/ecommerce-api-frontend
 
 ## API endpoints
 <sup>*Uses JWT authentication.  
@@ -8,7 +9,7 @@ Methods in italic are only accessible by users.
 Methods in bold are only accessible by admins.*</sup>
 
 ### User endpoints 
-`http://localhost:5000/account/`
+`http://localhost:5000/api/account/`
 
 | Endpoint  | HTTP methods | Description |
 | --- | --- | --- |
@@ -27,7 +28,7 @@ Order products by price & rating.
 Search through products by name & description.</sup>  
   
 <sup>Filter reviews by rating.</sup>  
-`http://localhost:5000/`
+`http://localhost:5000/api/`
 
 | Endpoint  | HTTP methods | Description |
 | --- | --- | --- |
@@ -39,7 +40,7 @@ Search through products by name & description.</sup>
 | `<int:product_pk>/reviews/<int:pk>/` | `GET` *`PUT` `PATCH` `DELETE`* |
 
 ### Cart endpoints
-`http://localhost:5000/cart/`
+`http://localhost:5000/api/cart/`
 
 | Endpoint  | HTTP methods | Description |
 | --- | --- | --- |
@@ -49,14 +50,14 @@ Search through products by name & description.</sup>
 
 ### Order endpoints
 <sup>Order sales & orders by date ordered.</sup>  
-`http://localhost:5000/orders/`
+`http://localhost:5000/api/orders/`
 
 | Endpoint  | HTTP methods | Description |
 | --- | --- | --- |
 | `checkout/` | *`POST`* | Turns cart items to orders, deleting the existing cart |
 | `history/` | *`GET`* | Returns the user's placed orders |
 | `sales/` | *`GET`* | Returns the user's sales/shop orders |
-| `sales/<int:pk>/` | *`GET` `PUT` `PATCH` `DELETE`* |
+| `sales/<int:pk>/` | *`GET` `PUT` `PATCH`* |
 
 
 ## Usage
